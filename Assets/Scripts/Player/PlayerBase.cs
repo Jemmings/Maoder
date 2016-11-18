@@ -18,6 +18,21 @@ public abstract class PlayerBase : IPlayer
 	private Vector2 handDirection;
 	private Quaternion handRotation;
 
+	public bool HandEmpty
+	{
+		get
+		{
+			if(hand.Count > 0)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+
 	public bool TurnOver
 	{
 		get
@@ -29,7 +44,7 @@ public abstract class PlayerBase : IPlayer
 			turnOver = value;
 		}
 	}
-
+		
 	public PlayerBase(GameController controller, List<PlayingCard> deck,List<PlayingCard> playedCards,Vector2 handPosition,Vector2 handDirection,Quaternion handRotation)
 	{
 		this.controller = controller;

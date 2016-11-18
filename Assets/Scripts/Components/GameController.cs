@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
 	private bool gameStarted = false;
 	private bool movingIndicator = false;
 	private bool checkingDeck = false;
+	private bool gameOver = false;
 
 	void Awake()
 	{
@@ -91,7 +92,16 @@ public class GameController : MonoBehaviour
 
 	void Update()
 	{
-		currentPlayer.UpdateState();
+		// Check if the current player has won.
+		if(currentPlayer.HandEmpty && gameStarted)
+		{
+			Debug.Log( currentPlayer.ToString() + " won!" );
+			gameOver = true;
+		}
+		else if(!gameOver)
+		{
+			currentPlayer.UpdateState();
+		}
 
 		if(gameStarted && currentPlayer.TurnOver && !movingIndicator)
 		{
