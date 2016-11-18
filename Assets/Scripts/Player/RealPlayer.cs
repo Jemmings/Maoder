@@ -19,6 +19,7 @@ public class RealPlayer : PlayerBase
 	{
 		// Set card colliders to true.
 		EnableColliders(true);
+		CheckForPenalty();
 		playerChosen = false;
 	}
 
@@ -31,7 +32,8 @@ public class RealPlayer : PlayerBase
 			TurnOver = true;
 		}
 
-		if(!playerChosen)
+		// delay waits for any penalty cards to be given. 
+		if(!playerChosen && !delay)
 		{
 			CheckInput();
 		}
@@ -81,12 +83,22 @@ public class RealPlayer : PlayerBase
 		}
 	}
 
+	void CheckForPenalty()
+	{
+		// If the last played card is a penalty card, pickup.
+		int penaltyAmount = controller.rules.CheckCardValidity( playedCards[playedCards.Count-1] );
+		if(penaltyAmount > 0)
+		{
+			delay = true;
+			PickUpACard(2, false);
+		}
+	}
+
 	void EnableColliders(bool enable)
 	{
 		for(var i = 0; i < hand.Count; i++)
 		{
 			hand[i].CardGO.GetComponent<BoxCollider2D>().enabled = enable;
-			hand[i].CardGO.transform.position = new Vector3(hand[i].CardGO.transform.position.x,hand[i].CardGO.transform.position.y, (hand.Count - i) * -0.1f);
 		}
 	}
 		
@@ -135,6 +147,11 @@ public class RealPlayer : PlayerBase
 				deck.RemoveAt( 0 );
 			}
 			AddCard( numberOfCards,end );
+		}
+
+		if(!end)
+		{
+			EnableColliders( true );
 		}
 	}
 

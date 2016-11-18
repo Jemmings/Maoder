@@ -67,15 +67,18 @@ public abstract class PlayerBase : IPlayer
 		controller.StartCoroutine( controller.lerp.LerpMove2D(card.CardGO,handPosition,controller.turnCardPosition,handRotation,Quaternion.Euler(Vector3.zero),0.3f,false) );
 		timeOffset = Time.time + 0.3f;
 		delay = true;
+		endTurn = true;
 	}
 
 	void SortHandCardOrder()
 	{
+		//Debug.Log("Sorting Card Order");
 		float cardDist = Mathf.Clamp(3f/hand.Count,0.2f,0.5f);
 
 		for(var i = 0; i < hand.Count; i++)
 		{
 			hand[i].CardGO.transform.position = handPosition + ((handDirection * cardDist) * i);
+			hand[i].CardGO.transform.position = hand[i].CardGO.transform.position + new Vector3(0,0,(hand.Count - i) * -0.1f);
 			hand[i].CardGO.transform.rotation = handRotation;
 			hand[i].CardGO.GetComponent<SpriteRenderer>().sortingOrder = hand.Count - i;
 		}
@@ -109,6 +112,7 @@ public abstract class PlayerBase : IPlayer
 		{
 			SortHandCardOrder();
 			delay = false;
+
 			if(endTurn)
 			{
 				turnOver = true;
