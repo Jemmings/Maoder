@@ -23,12 +23,7 @@ public class AiPlayer : PlayerBase
 	public override void UpdateState()
 	{
 		base.UpdateState();
-
-		if(Input.GetKeyDown(KeyCode.Space))
-		{
-			TurnOver = true;
-		}
-
+	
 		if(!delay && penaltyChecked)
 		{
 			ChooseAction();
@@ -38,7 +33,6 @@ public class AiPlayer : PlayerBase
 
 	void ChooseAction()
 	{
-		Debug.Log("Choosing Action");
 		int[] playOrder = shuffle.Shuffle(hand.Count);
 
 		for(var i = 0; i < playOrder.Length; i++)

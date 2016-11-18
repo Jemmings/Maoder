@@ -112,7 +112,6 @@ public abstract class PlayerBase : IPlayer
 			delay = true;
 			PickUpACard(penaltyAmount, false);
 		}
-		Debug.Log("Penalty Checked");
 	}
 
 	protected virtual void PickUpACard(int numberOfCards, bool end)

@@ -4,23 +4,12 @@ using System.Collections.Generic;
 
 public class BasicRuleset : IRuleset
 {
-	//RuleBase singleCardSuitRestriction, noMatchingValues, valueRestrictionPerSuit,mustAlternateValues;
-	//PenaltyBase pickUpCards;
-	List<RuleBase> rulesList = new List<RuleBase>();
-	List<PenaltyBase> penaltyList = new List<PenaltyBase>();
+	private List<RuleBase> rulesList = new List<RuleBase>();
+	private List<PenaltyBase> penaltyList = new List<PenaltyBase>();
+	private List<string> ruleDescriptions = new List<string>();
 
 	public BasicRuleset()
 	{
-		// Rules.
-		//singleCardSuitRestriction = new SingleCardSuitResctiction();
-		//noMatchingValues = new NoMatchingValues();
-		//valueRestrictionPerSuit = new ValueRestrictionPerSuit();
-		//mustAlternateValues = new MustAlternateValues();
-
-		// Penalties.
-		//pickUpCards = new PickUpCards();
-
-
 		CreateRuleset( Shuffle(4) );
 		CreatePenaltySet(2);
 	}
@@ -52,6 +41,7 @@ public class BasicRuleset : IRuleset
 		foreach(RuleBase rule in rulesList)
 		{
 			Debug.Log(rule.RuleDescription);
+			ruleDescriptions.Add( rule.RuleDescription );
 		}
 	}
 
@@ -72,6 +62,16 @@ public class BasicRuleset : IRuleset
 		{
 			Debug.Log(penalty.PenaltyDescription);
 		}
+	}
+
+	public string[] GetRules()
+	{
+		string[] rules = new string[ruleDescriptions.Count];
+		for(var i = 0; i < rules.Length; i++)
+		{
+			rules[i] = ruleDescriptions[i];
+		}
+		return rules;
 	}
 
 	public int CheckCardValidity(PlayingCard proposedCard)

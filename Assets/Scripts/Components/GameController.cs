@@ -39,10 +39,49 @@ public class GameController : MonoBehaviour
 	private bool checkingDeck = false;
 	private bool gameOver = false;
 
-	void Awake()
+	void Start()
 	{
 		lerp = GetComponent<LerpComponent>();
+		CreateGameObjects();
+	}
 
+	void Update()
+	{
+		// Check if the current player has won.
+		if(gameStarted && currentPlayer.HandEmpty)
+		{
+			Debug.Log( currentPlayer.ToString() + " won!" );
+			gameOver = true;
+		}
+		else if(!gameOver && currentPlayer != null)
+		{
+			currentPlayer.UpdateState();
+		}
+
+		if(gameStarted && currentPlayer.TurnOver && !movingIndicator)
+		{
+			if((int)turnState == 3)
+			{
+				turnState = (ETurnState)0;
+			}
+			else
+			{
+				int nextTurn = (int)turnState + 1;
+				turnState = (ETurnState)nextTurn;
+			}
+			movingIndicator = true;
+			StartCoroutine( ChangePlayers(1) );
+		}
+	}
+		
+	public void SetupGame(BasicRuleset rules)
+	{
+		this.rules = rules;
+		ShuffleCards();
+	}
+
+	private void CreateGameObjects()
+	{
 		// Create playing cards.
 		string[] cardSuits = new string[4]{"Spades","Hearts","Clubs","Diamonds"};
 		int suitNum = 0;
@@ -63,6 +102,14 @@ public class GameController : MonoBehaviour
 		arrayPos++;
 		playingCards[arrayPos] = new PlayingCard(2,"Joker");
 
+		// Organise the cards inside an empty GameObject.
+		GameObject cardHolder = new GameObject("Card Holder");
+		foreach(PlayingCard card in playingCards)
+		{
+			card.CardGO.transform.parent = cardHolder.transform;
+			card.CardGO.transform.name = string.Format("{0} of {1}",card.Value,card.Suit);
+		}
+
 		// Create the one-off GameObjects.
 		FaceDownCard = Instantiate(FaceDownCard,offscreen,Quaternion.identity) as GameObject;
 		TurnIndicator = Instantiate(TurnIndicator) as GameObject;
@@ -73,52 +120,7 @@ public class GameController : MonoBehaviour
 		topAIPlayer = new AiPlayer(this,deck,playedCards,topStartingPoint,Vector2.right,Quaternion.Euler(new Vector3(0,0,0)));
 		rightAIPlayer = new AiPlayer(this,deck,playedCards,rightStartingPoint,-Vector2.up,Quaternion.Euler(new Vector3(0,0,90)));
 		realPlayer = new RealPlayer(this,deck,playedCards,bottomStartingPoint,-Vector2.right,Quaternion.Euler(new Vector3(0,0,0)));
-
 	}
-		
-	void Start() 
-	{
-		GameObject cardHolder = new GameObject("Card Holder");
-		foreach(PlayingCard card in playingCards)
-		{
-			card.CardGO.transform.parent = cardHolder.transform;
-			card.CardGO.transform.name = string.Format("{0} of {1}",card.Value,card.Suit);
-		}
-
-		rules = new BasicRuleset();
-		ShuffleCards();
-	}
-	
-
-	void Update()
-	{
-		// Check if the current player has won.
-		if(currentPlayer.HandEmpty && gameStarted)
-		{
-			Debug.Log( currentPlayer.ToString() + " won!" );
-			gameOver = true;
-		}
-		else if(!gameOver)
-		{
-			currentPlayer.UpdateState();
-		}
-
-		if(gameStarted && currentPlayer.TurnOver && !movingIndicator)
-		{
-			if((int)turnState == 3)
-			{
-				turnState = (ETurnState)0;
-			}
-			else
-			{
-				int nextTurn = (int)turnState + 1;
-				turnState = (ETurnState)nextTurn;
-			}
-			movingIndicator = true;
-			StartCoroutine( ChangePlayers(1) );
-		}
-	}
-
 
 	void ShuffleCards()
 	{

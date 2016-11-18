@@ -27,11 +27,6 @@ public class RealPlayer : PlayerBase
 	{
 		base.UpdateState();
 
-		if(Input.GetKeyDown(KeyCode.Space))
-		{
-			TurnOver = true;
-		}
-
 		// delay waits for any penalty cards to be given. 
 		if(!playerChosen && !delay)
 		{
