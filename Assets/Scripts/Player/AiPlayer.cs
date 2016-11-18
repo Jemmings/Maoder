@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class AiPlayer : PlayerBase
 {
 	private ShuffleInts shuffle;
+	private bool penaltyChecked = false;
 
 	public AiPlayer(GameController controller, List<PlayingCard> deck,List<PlayingCard> playedCards,Vector2 handPosition,Vector2 handDirection,Quaternion handRotation)
 		: base(controller,deck,playedCards,handPosition,handDirection,handRotation)
@@ -14,7 +15,8 @@ public class AiPlayer : PlayerBase
 
 	public override void StateChange()
 	{
-		ChooseAction();
+		CheckForPenalty( LastCardPlayed() );
+		penaltyChecked = true;
 	}
 
 
@@ -26,10 +28,17 @@ public class AiPlayer : PlayerBase
 		{
 			TurnOver = true;
 		}
+
+		if(!delay && penaltyChecked)
+		{
+			ChooseAction();
+			penaltyChecked = false;
+		}
 	}
 
 	void ChooseAction()
 	{
+		Debug.Log("Choosing Action");
 		int[] playOrder = shuffle.Shuffle(hand.Count);
 
 		for(var i = 0; i < playOrder.Length; i++)
