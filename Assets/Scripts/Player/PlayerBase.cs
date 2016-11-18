@@ -63,7 +63,6 @@ public abstract class PlayerBase : IPlayer
 	{
 		// Update the card to show it's just been played.
 		card.PreviousCard = true;
-
 		hand.Remove( card );
 		playedCards.Add( card );
 		SortPlayedCardsOrder();
