@@ -6,6 +6,7 @@ public class PlayingCard
 	private int value;
 	private string suit;
 	private bool inDeck;
+	private bool previousCard;
 	private GameObject cardGO;
 
 	public PlayingCard(int value, string suit)
@@ -13,6 +14,7 @@ public class PlayingCard
 		this.value = value;
 		this.suit = suit;
 		this.inDeck = true;
+		previousCard = false;
 
 		cardGO = MonoBehaviour.Instantiate(Resources.Load(suit +"/"+ value.ToString()),new Vector2(-10,-10),Quaternion.identity) as GameObject;
 	}
@@ -32,8 +34,12 @@ public class PlayingCard
 	}
 	public bool InDeck
 	{
-		get{ return inDeck; }
-		set{ inDeck = value; }
+		get; set;
+	}
+
+	public bool PreviousCard
+	{
+		get; set;
 	}
 
 }

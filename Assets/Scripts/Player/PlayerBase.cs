@@ -61,6 +61,9 @@ public abstract class PlayerBase : IPlayer
 
 	public void RemoveCard(PlayingCard card)
 	{
+		// Update the card to show it's just been played.
+		card.PreviousCard = true;
+
 		hand.Remove( card );
 		playedCards.Add( card );
 		SortPlayedCardsOrder();
@@ -68,6 +71,11 @@ public abstract class PlayerBase : IPlayer
 		timeOffset = Time.time + 0.3f;
 		delay = true;
 		endTurn = true;
+	}
+
+	protected PlayingCard LastCardPlayed()
+	{
+		return playedCards[playedCards.Count-1];
 	}
 
 	void SortHandCardOrder()

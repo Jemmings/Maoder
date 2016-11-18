@@ -19,7 +19,7 @@ public class RealPlayer : PlayerBase
 	{
 		// Set card colliders to true.
 		EnableColliders(true);
-		CheckForPenalty();
+		CheckForPenalty( LastCardPlayed() );
 		playerChosen = false;
 	}
 
@@ -83,10 +83,20 @@ public class RealPlayer : PlayerBase
 		}
 	}
 
-	void CheckForPenalty()
+	void CheckForPenalty(PlayingCard lastCardPlayed)
 	{
+		// Check if the card was placed by the player before.
+		if(!lastCardPlayed.PreviousCard)
+		{
+			return;
+		}
+		else
+		{
+			lastCardPlayed.PreviousCard = false;
+		}
+
 		// If the last played card is a penalty card, pickup.
-		int penaltyAmount = controller.rules.CheckCardValidity( playedCards[playedCards.Count-1] );
+		int penaltyAmount = controller.rules.CheckCardValidity( lastCardPlayed );
 		if(penaltyAmount > 0)
 		{
 			delay = true;
