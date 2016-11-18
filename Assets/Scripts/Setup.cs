@@ -55,6 +55,7 @@ public class Setup : MonoBehaviour
 
 	void Awake()
 	{
+		Debug.Log("Right Project");
 		// GetComponents.
 		lerp = GetComponent<LerpComponent>();
 
