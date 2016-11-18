@@ -10,9 +10,10 @@ public abstract class PlayerBase : IPlayer
 	protected List<PlayingCard> deck = new List<PlayingCard>();
 	protected bool turnOver = true;
 	protected bool delay = false;
+	protected bool endTurn = false;
+	protected float timeOffset = 0;
 
 	private GameObject faceDownCard;
-	private float timeOffset = 0;
 	private Vector2 handPosition;
 	private Vector2 handDirection;
 	private Quaternion handRotation;
@@ -41,12 +42,21 @@ public abstract class PlayerBase : IPlayer
 		faceDownCard = MonoBehaviour.Instantiate(Resources.Load("Face Down Card"),new Vector2(-10,-10),Quaternion.identity) as GameObject;
 	}
 
-	public void AddCard(PlayingCard card)
+	public void AddCard(int numberOfCards,bool end)
+	{
+		controller.StartCoroutine( controller.lerp.LerpMove2D(faceDownCard,controller.deckPosition,handPosition,Quaternion.Euler(Vector3.zero),handRotation,0.3f,false,LerpComponent.LerpEasing.linear,true,numberOfCards) );
+		timeOffset = Time.time + (0.3f * numberOfCards);
+		delay = true;
+		endTurn = end;
+	}
+
+	public void AddCard(PlayingCard card, bool end)
 	{
 		hand.Add( card );
 		controller.StartCoroutine( controller.lerp.LerpMove2D(faceDownCard,controller.deckPosition,handPosition,Quaternion.Euler(Vector3.zero),handRotation,0.3f,true) );
 		timeOffset = Time.time + 0.3f;
 		delay = true;
+		endTurn = end;
 	}
 
 	public void RemoveCard(PlayingCard card)
@@ -99,8 +109,11 @@ public abstract class PlayerBase : IPlayer
 		{
 			SortHandCardOrder();
 			delay = false;
-			turnOver = true;
+			if(endTurn)
+			{
+				turnOver = true;
+			}
 		}
-
 	}
+
 }
